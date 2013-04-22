@@ -1,17 +1,22 @@
 package indexers;
-import java.awt.List;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.document.Field;
+import org.apache.lucene.document.TextField;
+import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.NIOFSDirectory;
+import org.apache.lucene.util.Version;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.nodes.TextNode;
-import org.jsoup.parser.Parser;
-import org.jsoup.select.Elements;
 
 
 public class NLH {
+	public static final String INDEX_LOCATION = "/nlh_index";
 	/* 
 	 * Retrieves each NLH chapter and indexes diseases, adding relevant
 	 * attributes to the Lucene file.
@@ -27,13 +32,12 @@ public class NLH {
 		 * For each file, do something. Here will will send to HTML stripper
 		 * in preparation for indexing.
 		 */
-		for(int i=0; i < 2; i++){
+		for(int i=0; i < 1; i++){
 			if(listOfFiles[i].isFile()){
 				file = listOfFiles[i];
 				
 				try {
 					extractText(file);
-					System.out.println(listOfFiles[i].getName());
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -43,17 +47,33 @@ public class NLH {
 		}
 	}
 	
-	//Strips HTML tags from file, returns stripped String
-	public String extractText(File f) throws IOException{
-		Document doc = Jsoup.parse(f, "ISO-8859-1", "");
+	//Strips HTML tags from file, currently prints to console
+	public void extractText(File f) throws IOException{
 		
+		//Initialize Lucene index, analyze and writer
+		Directory index = new NIOFSDirectory(new File(INDEX_LOCATION));
+		StandardAnalyzer analyzer = new StandardAnalyzer(Version.LUCENE_41);
+		IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_41, analyzer);
+		IndexWriter writer = new IndexWriter(index, config);
+		
+		//Strips HTML document with Jsoup
+		Document doc = Jsoup.parse(f, "ISO-8859-1", "");
+		//Each element with the selected classes gets pulled
 		for( Element element : doc.select("p, h3, h5") )
 		{
+			if( element.text().contains("Publisert") ) { continue; }
+			
+			//If element has Header 3 attribute it is a new disease, create new Lucene document
+			if( element.hasAttr("h3") ){
+				org.apache.lucene.document.Document d = new org.apache.lucene.document.Document();
+				d.add(new TextField("disease", element.toString(), Field.Store.YES));
+			}
+			
 		    System.out.println(element.text());
-		    // eg. you can use a StringBuilder and append lines here ...
 		}
-		//System.out.println(doc);
 		
-		return null;
+		//Close Lucene writer
+		writer.close();
+
 	}
 }
