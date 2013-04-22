@@ -1,4 +1,4 @@
-package webint.indexers;
+package indexers;
 
 public class ICD {
 	

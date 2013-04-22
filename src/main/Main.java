@@ -1,4 +1,4 @@
-package webint.main;
+package main;
 
 public class Main {
 
