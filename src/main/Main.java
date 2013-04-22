@@ -5,8 +5,8 @@ import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.util.Version;
-
 import java.io.*;
+import indexers.*;
 
 public class Main {
 
@@ -30,7 +30,8 @@ public class Main {
 		//Creating index, I believe each class can add Documents now to it
 		Directory index = new RAMDirectory();
 		
-		//Call NLH to index Norsk legemiddelhånboken	
-		indexers.NLH.indexNLH();
+		//Call NLH to index Norsk legemiddelhånboken
+		NLH nlh = new NLH();
+		nlh.indexNLH();
 	}
 }
