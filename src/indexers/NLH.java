@@ -1,5 +1,14 @@
 package indexers;
+import java.awt.List;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.nodes.TextNode;
+import org.jsoup.parser.Parser;
+import org.jsoup.select.Elements;
 
 
 public class NLH {
@@ -22,7 +31,13 @@ public class NLH {
 		for(int i=0; i < listOfFiles.length; i++){
 			if(listOfFiles[i].isFile()){
 				file = listOfFiles[i];
-				strip(file);
+				
+				try {
+					extractText(file);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				/*(Testing)
 				 * file = listOfFiles[i].getName();
 				 * System.out.println(file);
@@ -31,8 +46,10 @@ public class NLH {
 		}
 	}
 	
-	//Strips HTML tags from string, returns stripped String
-	public String strip(File f){
+	//Strips HTML tags from file, returns stripped String
+	public String extractText(File f) throws IOException{
+		Document doc = Jsoup.parse(f, "UTF-8", "");
+		System.out.println(doc);
 		
 		return "";
 	}
