@@ -1,6 +1,7 @@
 package indexers;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Field;
@@ -13,13 +14,14 @@ import org.apache.lucene.util.Version;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 
 public class NLH {
-	public static final String INDEX_LOCATION = "/nlh_index";
+	public static final String INDEX_LOCATION = "/WebIntelligence/data/nlh_index";
 	/* 
 	 * Retrieves each NLH chapter and indexes diseases, adding relevant
-	 * attributes to the Lucene file.
+	 * attributes to the Lucene files.
 	 */
 	public void indexNLH(){
 		
@@ -28,10 +30,10 @@ public class NLH {
 		File file;
 		File folder = new File(path);
 		File[] listOfFiles = folder.listFiles();
-		/*
-		 * For each file, do something. Here will will send to HTML stripper
-		 * in preparation for indexing.
-		 */
+		
+		//For each file, do something. Here will will send to HTML stripper
+		//in preparation for indexing.
+		 
 		for(int i=0; i < 1; i++){
 			if(listOfFiles[i].isFile()){
 				file = listOfFiles[i];
@@ -58,22 +60,43 @@ public class NLH {
 		
 		//Strips HTML document with Jsoup
 		Document doc = Jsoup.parse(f, "ISO-8859-1", "");
-		//Each element with the selected classes gets pulled
-		for( Element element : doc.select("p, h3, h5") )
-		{
-			if( element.text().contains("Publisert") ) { continue; }
-			
-			//If element has Header 3 attribute it is a new disease, create new Lucene document
-			if( element.hasAttr("h3") ){
-				org.apache.lucene.document.Document d = new org.apache.lucene.document.Document();
-				d.add(new TextField("disease", element.toString(), Field.Store.YES));
-			}
-			
-		    System.out.println(element.text());
-		}
 		
+		Elements h_3 = doc.select("h3");
+		Elements h_2 = doc.select("h2");
+		
+		if (h_3.size()>0){
+			for(int i=0; i<h_3.size(); i++){
+				Element e = h_3.get(i);
+				
+				System.out.println("Header is :" + e.ownText());
+				org.apache.lucene.document.Document d = new org.apache.lucene.document.Document();
+				d.add(new TextField("disease", e.ownText(), Field.Store.YES));
+								
+				Element eSib = e.nextElementSibling();
+				if(eSib.className().contains("revidert")){
+					eSib = eSib.nextElementSibling();
+				}
+				for (Element element : eSib.select("h5")){
+					if(element.ownText().contains("Generelt")){
+						System.out.println("First h5 is: " + element.ownText());	
+						for (Element gElement : element.siblingElements()){
+							if(gElement.select("p").hasText()){
+								System.out.println("Generelts text is: " + gElement.ownText());
+							}
+						}
+					}
+					if(element.ownText().contains("Symptomer")){
+						System.out.println("Second h5 is: " + element.ownText());
+						for (Element sElement : element.siblingElements()){
+							if(sElement.select("p").hasText()){
+								System.out.println("Symptomer text is: " + sElement.ownText());
+							}
+						}
+					}
+				}
+			}
 		//Close Lucene writer
 		writer.close();
-
+		}
 	}
 }
