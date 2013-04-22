@@ -34,7 +34,7 @@ public class NLH {
 		//For each file, do something. Here will will send to HTML stripper
 		//in preparation for indexing.
 		 
-		for(int i=0; i < 1; i++){
+		for(int i=0; i < 5; i++){
 			if(listOfFiles[i].isFile()){
 				file = listOfFiles[i];
 				
@@ -68,7 +68,7 @@ public class NLH {
 			for(int i=0; i<h_3.size(); i++){
 				Element e = h_3.get(i);
 				
-				System.out.println("Header is :" + e.ownText());
+				System.out.println(e.ownText());
 				org.apache.lucene.document.Document d = new org.apache.lucene.document.Document();
 				d.add(new TextField("disease", e.ownText(), Field.Store.YES));
 								
@@ -77,26 +77,65 @@ public class NLH {
 					eSib = eSib.nextElementSibling();
 				}
 				for (Element element : eSib.select("h5")){
-					if(element.ownText().contains("Generelt")){
-						System.out.println("First h5 is: " + element.ownText());	
+					if(element.ownText().contains("Generelt") || element.ownText().contains("Definisjon")){
+						System.out.println(element.ownText());	
 						for (Element gElement : element.siblingElements()){
 							if(gElement.select("p").hasText()){
-								System.out.println("Generelts text is: " + gElement.ownText());
+								System.out.println(gElement.ownText());
 							}
 						}
 					}
 					if(element.ownText().contains("Symptomer")){
-						System.out.println("Second h5 is: " + element.ownText());
+						System.out.println(element.ownText());
 						for (Element sElement : element.siblingElements()){
 							if(sElement.select("p").hasText()){
-								System.out.println("Symptomer text is: " + sElement.ownText());
+								System.out.println(sElement.ownText());
 							}
 						}
 					}
 				}
+				eSib = eSib.nextElementSibling();
+				System.out.println("---");
 			}
+		} else {
+			for(int i=0; i<h_2.size(); i++){
+				Element e = h_2.get(i);
+				
+				System.out.println(e.ownText());
+				org.apache.lucene.document.Document d = new org.apache.lucene.document.Document();
+				d.add(new TextField("disease", e.ownText(), Field.Store.YES));
+								
+				Element eSib = e.nextElementSibling();
+				if(eSib.className().contains("revidert")){
+					eSib = eSib.nextElementSibling();
+				}
+				while(eSib.nextElementSibling() != null){
+					for (Element element : eSib.select("h5")){
+						if(element.ownText().contains("Generelt") || element.ownText().contains("Definisjon")){
+							System.out.println(element.ownText());	
+							for (Element gElement : element.siblingElements()){
+								if(gElement.select("p").hasText()){
+									System.out.println(gElement.ownText());
+								}
+							}
+						}
+						//TODO; Doesn't work if symptoms are in bullets
+						if(element.ownText().contains("Symptomer")){
+							System.out.println(element.ownText());
+							for (Element sElement : element.siblingElements()){
+								if(sElement.select("p").hasText()){
+									System.out.println(sElement.ownText());
+								}
+							}
+						}
+					}
+				eSib = eSib.nextElementSibling();
+				}
+				System.out.println("---");
+			}
+		}
+		
 		//Close Lucene writer
 		writer.close();
-		}
 	}
 }
