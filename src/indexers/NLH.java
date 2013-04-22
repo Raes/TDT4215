@@ -23,34 +23,37 @@ public class NLH {
 		File file;
 		File folder = new File(path);
 		File[] listOfFiles = folder.listFiles();
-		
 		/*
 		 * For each file, do something. Here will will send to HTML stripper
 		 * in preparation for indexing.
 		 */
-		for(int i=0; i < listOfFiles.length; i++){
+		for(int i=0; i < 2; i++){
 			if(listOfFiles[i].isFile()){
 				file = listOfFiles[i];
 				
 				try {
 					extractText(file);
+					System.out.println(listOfFiles[i].getName());
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				/*(Testing)
-				 * file = listOfFiles[i].getName();
-				 * System.out.println(file);
-				*/
+
 			}
 		}
 	}
 	
 	//Strips HTML tags from file, returns stripped String
 	public String extractText(File f) throws IOException{
-		Document doc = Jsoup.parse(f, "UTF-8", "");
-		System.out.println(doc);
+		Document doc = Jsoup.parse(f, "ISO-8859-1", "");
 		
-		return "";
+		for( Element element : doc.select("p, h3, h5") )
+		{
+		    System.out.println(element.text());
+		    // eg. you can use a StringBuilder and append lines here ...
+		}
+		//System.out.println(doc);
+		
+		return null;
 	}
 }
