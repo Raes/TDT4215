@@ -182,21 +182,19 @@ public class CaseParser {
 		}
 		
 		while((readLine = br.readLine()) != null){
-			if(readLine.charAt(0) != '#'){
-				scanner = new Scanner(readLine);
-				while(scanner.hasNext()){
-					String word = scanner.next();
-					word = cleanWord(word);
-					word = word.toLowerCase();
-					
-					if(isStopWord(word)){
-						continue;
-					}
-					word = stemming(word);
-					parsedString += word;
-					if(scanner.hasNext()){
-						parsedString += " ";
-					}
+			scanner = new Scanner(readLine);
+			while(scanner.hasNext()){
+				String word = scanner.next();
+				word = cleanWord(word);
+				word = word.toLowerCase();
+				
+				if(isStopWord(word)){
+					continue;
+				}
+				word = stemming(word);
+				parsedString += word;
+				if(scanner.hasNext()){
+					parsedString += " ";
 				}
 			}
 		}
