@@ -62,7 +62,7 @@ public class CaseParser {
 				return true;
 			}
 		}
-		for (int i = 0; i < word.length(); i++){
+		for (int i = 0; i < letters.length; i++){
 			if(endingLetter == letters[i]){
 				return true;
 			}
