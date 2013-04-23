@@ -56,7 +56,7 @@ public class TableGenerator {
 			
 			//Send term list to search()
 			try {
-				System.out.println("Case file# " + i + " top 10 results");
+				System.out.println("Case file #" + (i+1) + " top results");
 				System.out.println("------------------");
 				search(terms);
 				System.out.println("");
@@ -82,7 +82,7 @@ public class TableGenerator {
         searcher.search(q, collector);
         ScoreDoc[] hits = collector.topDocs().scoreDocs;
        
-        System.out.println("Found " + hits.length + " hits.");
+        //System.out.println("Found " + hits.length + " hits.");
        
         for(int i=0;i<hits.length;++i) {
             int docId = hits[i].doc;
