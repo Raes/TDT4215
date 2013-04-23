@@ -50,8 +50,13 @@ public class CaseParser {
 	
 	public static boolean validSEnding(String word){
 		char letters[] = new char[]{'b', 'c', 'd', 'f', 'g', 'h', 'j', 'l', 'm', 'n', 'o', 'p', 'r', 't', 'v', 'y', 'z'};
-		char endingLetter = word.charAt(word.length()-2);
-		
+		char endingLetter = ' ';
+		if(word.length() > 2){
+			endingLetter = word.charAt(word.length()-2);
+		}
+		else{
+			return false;
+		}
 		if(endingLetter == 'k'){
 			if(!isVowel(word.charAt(word.length()-3))){
 				return true;
