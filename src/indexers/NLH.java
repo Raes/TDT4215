@@ -1,6 +1,10 @@
 package indexers;
 import java.io.File;
 import java.io.IOException;
+import java.util.Scanner;
+
+import main.CaseParser;
+
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.TextField;
@@ -127,9 +131,28 @@ public class NLH {
 						
 						eSib = eSib.nextElementSibling();
 					}
+					//Strips/stems description for easier searching.
+					Scanner scanner = new Scanner(desc);
+					String parsedString = "";
+					while(scanner.hasNext()){
+						String word = scanner.next();
+						word = CaseParser.cleanWord(word);
+						word = word.toLowerCase();
+						
+						if(CaseParser.isStopWord(word)){
+							continue;
+						}
+						word = CaseParser.stemming(word);
+						parsedString += word;
+						if(scanner.hasNext()){
+							parsedString += " ";
+						}
+					}
+					
 					//Writes added files to Lucene document, should do this for the current disease.
-					d.add(new TextField("Desc", desc, Field.Store.YES));
+					d.add(new TextField("Desc", parsedString, Field.Store.YES));
 					writer.addDocument(d);
+					parsedString = "";
 					desc = "";
 					//System.out.println("---");
 				}
@@ -171,9 +194,27 @@ public class NLH {
 						
 						eSib = eSib.nextElementSibling();
 					}
+					//Strips/stems description for easier searching.
+					Scanner scanner = new Scanner(desc);
+					String parsedString = "";
+					while(scanner.hasNext()){
+						String word = scanner.next();
+						word = CaseParser.cleanWord(word);
+						word = word.toLowerCase();
+						
+						if(CaseParser.isStopWord(word)){
+							continue;
+						}
+						word = CaseParser.stemming(word);
+						parsedString += word;
+						if(scanner.hasNext()){
+							parsedString += " ";
+						}
+					}
 					//Writes added files to Lucene document, should do this for the current disease.
-					d.add(new TextField("Desc", desc, Field.Store.YES));
+					d.add(new TextField("Desc", parsedString, Field.Store.YES));
 					writer.addDocument(d);
+					parsedString = "";
 					desc = "";
 					//System.out.println("---");
 				}
