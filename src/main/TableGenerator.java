@@ -75,7 +75,7 @@ public class TableGenerator {
         StandardAnalyzer analyzer = new StandardAnalyzer(Version.LUCENE_41);
         Query q = new QueryParser(Version.LUCENE_41, "Desc", analyzer).parse(query);
         Directory index = new NIOFSDirectory(new File(INDEX_LOCATION));
-        int hitsPerPage = 10;
+        int hitsPerPage = 3;
         IndexReader reader = IndexReader.open(index);
         IndexSearcher searcher = new IndexSearcher(reader);
         TopScoreDocCollector collector = TopScoreDocCollector.create(hitsPerPage, true);

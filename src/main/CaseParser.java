@@ -169,7 +169,7 @@ public class CaseParser {
 	}
 	
 	public static String cleanWord(String word){
-		word = word.replaceAll("[^a-zA-Z\\-\\æ\\ø\\å\\Æ\\Ø\\Å]","");
+		word = word.replaceAll("[^a-zA-Z\\-\\Ê\\¯\\Â\\∆\\ÿ\\≈]","");
 		return word;
 	}
 	

@@ -2,21 +2,12 @@ package indexers;
 import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
-
 import main.CaseParser;
-
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.TextField;
-import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.queryparser.classic.ParseException;
-import org.apache.lucene.queryparser.classic.QueryParser;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TopScoreDocCollector;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.NIOFSDirectory;
 import org.apache.lucene.util.Version;
@@ -43,22 +34,6 @@ public class NLH {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
-		//For testing, searches Lucene files for relevant matches.
-		/*
-		try {
-			search("osteomyelitt");
-		} catch (ParseException e) {
-			System.out.println("Error in NLH.java/indexNLH - parse error sending string to search()");
-			e.printStackTrace();
-		} catch (IOException e) {
-			System.out.println("Error in NLH.java/indexNLH - IO error sending string to search()");
-			e.printStackTrace();
-		}
-		*/
-		
-		
 	}
 	
 	//Fishes out wanted text from HTML file, prints to console for testing, creates Lucene files for each disease.
@@ -77,7 +52,7 @@ public class NLH {
 		
 		//For each file, do something. Here will will send to HTML stripper
 		//which also adds data to Lucene files. 
-		for(int i=0; i < 4; i++){
+		for(int i=0; i < listOfFiles.length; i++){
 			if(listOfFiles[i].isFile()){
 				file = listOfFiles[i];
 			}
@@ -223,28 +198,5 @@ public class NLH {
 		}
 		//Close Lucene writer
 		writer.close();
-	}
-	
-	//Tester function for searching through Lucene files.
-	@SuppressWarnings("deprecation")
-	public static void search(String input) throws ParseException, IOException{
-        String query = input;
-        StandardAnalyzer analyzer = new StandardAnalyzer(Version.LUCENE_41);
-        Query q = new QueryParser(Version.LUCENE_41, "Desc", analyzer).parse(query);
-        Directory index = new NIOFSDirectory(new File(INDEX_LOCATION));
-        int hitsPerPage = 10;
-        IndexReader reader = IndexReader.open(index);
-        IndexSearcher searcher = new IndexSearcher(reader);
-        TopScoreDocCollector collector = TopScoreDocCollector.create(hitsPerPage, true);
-        searcher.search(q, collector);
-        ScoreDoc[] hits = collector.topDocs().scoreDocs;
-       
-        System.out.println("Found " + hits.length + " hits.");
-       
-        for(int i=0;i<hits.length;++i) {
-            int docId = hits[i].doc;
-            org.apache.lucene.document.Document d = searcher.doc(docId);
-            System.out.println((i + 1) + ". " + d.get("Disease") + " - " + d.get("Desc"));
-        }
 	}
 }
