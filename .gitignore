@@ -3,3 +3,4 @@
 
 .jar
 /data/nlh_index/*
+/data/stopwords.txt
