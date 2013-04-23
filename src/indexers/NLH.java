@@ -73,7 +73,7 @@ public class NLH {
 		
 		//For each file, do something. Here will will send to HTML stripper
 		//which also adds data to Lucene files. 
-		for(int i=0; i < listOfFiles.length; i++){
+		for(int i=0; i < 4; i++){
 			if(listOfFiles[i].isFile()){
 				file = listOfFiles[i];
 			}
@@ -90,7 +90,7 @@ public class NLH {
 					Element e = h_3.get(k);
 					
 					//For each disease, create new Lucene document and add disease name.
-					System.out.println(e.ownText());
+					//System.out.println(e.ownText());
 					org.apache.lucene.document.Document d = new org.apache.lucene.document.Document();
 					d.add(new TextField("Disease", e.ownText(), Field.Store.YES));
 					
@@ -107,7 +107,7 @@ public class NLH {
 									if(gElement.select("p").hasText()){
 										
 										//For each sentence under 'Generelt' add new text line to disease data file.
-										System.out.println(gElement.ownText());
+										//System.out.println(gElement.ownText());
 										desc += gElement.ownText() + " ";
 									}
 								}
@@ -118,7 +118,7 @@ public class NLH {
 									if(sElement.select("p").hasText()){
 										
 										//For each sentence under 'Symptomer' add new text line to disease data file.
-										System.out.println(sElement.ownText());
+										//System.out.println(sElement.ownText());
 										desc += sElement.ownText() + " ";
 									}
 								}
@@ -131,13 +131,13 @@ public class NLH {
 					d.add(new TextField("Desc", desc, Field.Store.YES));
 					writer.addDocument(d);
 					desc = "";
-					System.out.println("---");
+					//System.out.println("---");
 				}
 			} else {
 				for(int j=0; j<h_2.size(); j++){
 					Element e = h_2.get(j);
 					
-					System.out.println(e.ownText());
+					//System.out.println(e.ownText());
 					org.apache.lucene.document.Document d = new org.apache.lucene.document.Document();
 					d.add(new TextField("Disease", e.ownText(), Field.Store.YES));
 									
@@ -152,7 +152,7 @@ public class NLH {
 								//System.out.println(element.ownText());	
 								for (Element gElement : element.siblingElements()){
 									if(gElement.select("p").hasText()){
-										System.out.println(gElement.ownText());
+										//System.out.println(gElement.ownText());
 										desc += gElement.ownText() + " ";
 									}
 								}
@@ -162,7 +162,7 @@ public class NLH {
 								//System.out.println(element.ownText());
 								for (Element sElement : element.siblingElements()){
 									if(sElement.select("p").hasText()){
-										System.out.println(sElement.ownText());
+										//System.out.println(sElement.ownText());
 										desc += sElement.ownText() + " ";
 									}
 								}
@@ -175,7 +175,7 @@ public class NLH {
 					d.add(new TextField("Desc", desc, Field.Store.YES));
 					writer.addDocument(d);
 					desc = "";
-					System.out.println("---");
+					//System.out.println("---");
 				}
 			}
 		
