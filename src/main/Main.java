@@ -22,5 +22,10 @@ public class Main {
 		//Call NLH to index Norsk legemiddelhånboken
 		NLH nlh = new NLH();
 		nlh.indexNLH();
+		
+		//Call TableGenerator to parse case files and create 'hit tables'
+		//for our case files.
+		
+		TableGenerator tblGen = new TableGenerator();
 	}
 }

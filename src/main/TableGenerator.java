@@ -1,5 +1,7 @@
 package main;
 
+import java.io.File;
+
 public class TableGenerator {
 	
 	/*
@@ -10,5 +12,23 @@ public class TableGenerator {
 	 * in /data/nlh_index. Upon receiving hits the class then ranks and generates
 	 * a file with a table of hits.
 	 */
+	
+	public void generate(){
+		
+		//Retrieves folder of case files, puts into File list.
+		String path = "./data/cases";
+		File file = null;
+		File folder = new File(path);
+		File[] listOfFiles = folder.listFiles();
+		
+		//Empty string, return from calling Case Parser will go here
+		String terms = null;
+		
+		//For each case file, do something.
+		for(int i=0; i<listOfFiles.length; i++){
+			
+		}
+		
+	}
 
 }
