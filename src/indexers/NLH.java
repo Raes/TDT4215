@@ -185,6 +185,7 @@ public class NLH {
 	}
 	
 	//Tester function for searching through Lucene files.
+	@SuppressWarnings("deprecation")
 	public static void search(String input) throws ParseException, IOException{
         String query = input;
         StandardAnalyzer analyzer = new StandardAnalyzer(Version.LUCENE_41);
@@ -204,5 +205,5 @@ public class NLH {
             org.apache.lucene.document.Document d = searcher.doc(docId);
             System.out.println((i + 1) + ". " + d.get("Disease") + " - " + d.get("Desc"));
         }
-}
+	}
 }
