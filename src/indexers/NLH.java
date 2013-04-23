@@ -1,8 +1,6 @@
 package indexers;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
-
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.TextField;
@@ -18,11 +16,14 @@ import org.jsoup.select.Elements;
 
 
 public class NLH {
-	public static final String INDEX_LOCATION = "/WebIntelligence/data/nlh_index";
+	
 	/* 
 	 * Retrieves each NLH chapter and indexes diseases, adding relevant
-	 * attributes to the Lucene files.
+	 * attributes to the Lucene files. (Name and chapter, general info and symptoms)
 	 */
+	
+	public static final String INDEX_LOCATION = "/WebIntelligence/data/nlh_index";
+	
 	public void indexNLH(){
 		
 		//Lists all files in data/nlh directory
@@ -32,7 +33,7 @@ public class NLH {
 		File[] listOfFiles = folder.listFiles();
 		
 		//For each file, do something. Here will will send to HTML stripper
-		//in preparation for indexing.
+		//which also adds data to Lucene files.
 		 
 		for(int i=0; i < 5; i++){
 			if(listOfFiles[i].isFile()){
