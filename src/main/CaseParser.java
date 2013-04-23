@@ -110,7 +110,6 @@ public class CaseParser {
 		}
 		
 //		Step 2
-		String stepTwo[] = new String[]{"dt", "vt"};
 		if(word.endsWith("dt")){
 			word = word.substring(0,word.length()-3);
 		}
@@ -152,9 +151,15 @@ public class CaseParser {
 		
 		while((readLine = br.readLine()) != null){
 			if(readLine.equals(word)){
+				fis.close();
+				dis.close();
+				br.close();
 				return true;
 			}
 		}
+		fis.close();
+		dis.close();
+		br.close();
 		return false;
 	}
 	
