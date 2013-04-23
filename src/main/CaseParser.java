@@ -89,6 +89,7 @@ public class CaseParser {
 		}
 		if(word.endsWith("s") && (!stepOneAMatch)){
 			stepOneBMatch = true;
+		}
 		for(int i = 0; i < stepOneC.length; i++){
 			if(word.endsWith(stepOneC[i])){
 				matchedSuffixLength = stepOneC[i].length();
