@@ -71,20 +71,67 @@ public class CaseParser {
 		String stepOneA[] = new String[]{"a", "e", "ede", "ande", "ende", "ane", "ene", "hetene", "en", "heten", "ar", "er", "heter", "as", "es", "edes", "endes", "ens", "hetens", "ers", "ets", "et", "het", "ast"};
 		String stepOneB = new String("s");
 		String stepOneC[] = new String[]{"erte", "ert"};
+		boolean stepOneAMatch = false;
+		boolean stepOneBMatch = false;
+		boolean stepOneCMatch = false;
+		boolean stepThreeMatch = false;
 		int matchedSuffixLength = 0;
-		String r1 = word.substring(r1StartsAt(word));
+		int addressOfMatchedSuffix = 0;
 		
-		for(String suffix : stepOneA){
-			if(word.substring(suffix.length()).equals(suffix)){
-				matchedSuffixLength = suffix.length();
+		for(int i = 0; i < stepOneA.length; i++){
+			if(word.endsWith(stepOneA[i])){
+				if(matchedSuffixLength < (word.substring(stepOneA[i].length()).length())){
+					matchedSuffixLength = stepOneA[i].length();
+					addressOfMatchedSuffix = i;
+					stepOneAMatch = true;
+				}
 			}
+		}
+		if(word.charAt(word.length()-1) == 's' && (!stepOneAMatch)){
+			stepOneBMatch = true;
+		}
+		for(int i = 0; i < stepOneC.length; i++){
+			if(word.endsWith(stepOneC[i])){
+				matchedSuffixLength = stepOneC[i].length();
+				addressOfMatchedSuffix = i;
+				stepOneCMatch = true;
+			}
+		}
+		if(stepOneAMatch){
+			word = word.substring(0,(word.length()-stepOneA[addressOfMatchedSuffix].length()));
+		}
+		else if(stepOneBMatch){
+			if(validSEnding(word)){
+				word = word.substring(0,(word.length()-stepOneB.length()));
+			}
+		}
+		else if(stepOneCMatch){
+			word = word.substring(0,(word.length()-stepOneC[addressOfMatchedSuffix].length()));
 		}
 		
 //		Step 2
 		String stepTwo[] = new String[]{"dt", "vt"};
+		if(word.endsWith("dt")){
+			word = word.substring(0,word.length()-3);
+		}
+		else if(word.endsWith("vt")){
+			word = word.substring(0, word.length()-3);
+		}
 		
 //		Step 3
 		String stepThree[] = new String[]{"leg", "eleg", "ig", "eig", "lig", "elig", "els", "lov", "elov", "slov", "hetslov"};
+		for(int i = 0; i < stepThree.length; i++){
+			if(word.endsWith(stepThree[i])){
+				if(matchedSuffixLength < (word.substring(stepThree[i].length()).length())){
+					matchedSuffixLength = stepThree[i].length();
+					addressOfMatchedSuffix = i;
+					stepThreeMatch = true;
+				}
+			}
+		}
+		if(stepThreeMatch){
+			word = word.substring(0,(word.length()-stepThree[addressOfMatchedSuffix].length()));
+		}
 		
 		return word;
 	}
@@ -111,6 +158,11 @@ public class CaseParser {
 		return false;
 	}
 	
+	public static String cleanWord(String word){
+		word = word.replaceAll("[^a-zA-Z\\-\\_]","");
+		return word;
+	}
+	
 	public static String parseFile(File caseFile) throws IOException, FileNotFoundException{
 		String parsedString = new String("");
 		String readLine = new String("");
@@ -128,7 +180,18 @@ public class CaseParser {
 			if(readLine.charAt(0) != '#'){
 				scanner = new Scanner(readLine);
 				while(scanner.hasNext()){
+					String word = scanner.next();
+					word = cleanWord(word);
+					word = word.toLowerCase();
 					
+					if(isStopWord(word)){
+						continue;
+					}
+					word = stemming(word);
+					parsedString += word;
+					if(scanner.hasNext()){
+						parsedString += " ";
+					}
 				}
 			}
 		}
