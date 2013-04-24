@@ -23,7 +23,7 @@ public class CaseParser {
 	 * and returns a list of terms we want to search for.
 	 */
 	public static boolean isVowel(char letter){
-		char vowels[] = new char[]{'a', 'e', 'i', 'o', 'u', 'y', 'æ', 'ø', 'å'};
+		char vowels[] = new char[]{'a', 'e', 'i', 'o', 'u', 'y', 'Ê', '¯', 'Â'};
 		for (char vowel : vowels){
 			if(vowel == letter){
 				return true;
@@ -173,7 +173,7 @@ public class CaseParser {
 	}
 	
 	public static String cleanWord(String word){
-		word = word.replaceAll("[^a-zA-Z\\-\\æ\\ø\\å\\Æ\\Ø\\Å]","");
+		word = word.replaceAll("[^a-zA-Z\\-\\Ê\\¯\\Â\\∆\\ÿ\\≈]","");
 		return word;
 	}
 	
