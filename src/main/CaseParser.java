@@ -7,7 +7,11 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class CaseParser {
@@ -169,7 +173,7 @@ public class CaseParser {
 	}
 	
 	public static String cleanWord(String word){
-		word = word.replaceAll("[^a-zA-Z\\-\\Ê\\¯\\Â\\∆\\ÿ\\≈]","");
+		word = word.replaceAll("[^a-zA-Z\\-\\æ\\ø\\å\\Æ\\Ø\\Å]","");
 		return word;
 	}
 	
@@ -205,5 +209,59 @@ public class CaseParser {
 		}
 		br.close();
 		return parsedString;
+	}
+	
+	public static ArrayList<String> parseFileArray(File caseFile) throws IOException, FileNotFoundException{
+		ArrayList<String> array = new ArrayList<String>();
+		String parsedString = new String("");
+		String readLine = new String("");
+		String word = "";
+		Charset encoding = Charset.defaultCharset();
+		Scanner scan = null;
+		InputStream in = null;
+		Reader reader = null;
+		int r = 0;
+		
+		try{
+			in = new FileInputStream(caseFile);
+			reader = new InputStreamReader(in, encoding);
+		}catch(IOException e){
+			System.out.println("Error: " + e.getMessage());
+		}
+		while((r = reader.read()) != -1){
+			if(readLine.equals("") && r == 32){
+//				do nothing
+			}
+			else if(r == 46){
+				array.add(readLine);
+				readLine = "";
+			}
+			else{
+				readLine += (char)r;
+			}
+		}
+		
+		for(int i = 0; i < array.size(); i++){
+			readLine = array.get(i);
+			scan = new Scanner(readLine);
+			while(scan.hasNext()){
+				word = scan.next();
+				word = cleanWord(word);
+				word = word.toLowerCase();
+				if(isStopWord(word)){
+					continue;
+				}
+				word = stemming(word);
+				parsedString += word;
+				if (scan.hasNext()){
+					parsedString += " ";
+				}
+			}
+//			System.out.println(parsedString);
+			array.set(i, parsedString);
+			parsedString = "";
+		}
+		
+		return array;
 	}
 }

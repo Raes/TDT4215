@@ -17,13 +17,14 @@ public class Main {
 	public static void main(String[] args) throws IOException, ParseException{
 		
 		//Call NLH to index Norsk legemiddelhånboken
-		NLH nlh = new NLH();
-		nlh.indexNLH();
+//		NLH nlh = new NLH();
+//		nlh.indexNLH();
 		
 		//Call TableGenerator to parse case files and create 'hit tables'
 		//for our case files.
 		
 		TableGenerator tblGen = new TableGenerator();
 		tblGen.generate();
+		tblGen.generateByArray();
 	}
 }

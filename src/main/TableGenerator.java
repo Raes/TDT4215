@@ -3,6 +3,8 @@ package main;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryparser.classic.ParseException;
@@ -25,7 +27,35 @@ public class TableGenerator {
 	 * in /data/nlh_index. The top 10 result hits are returned and the output
 	 * is show in console.
 	 */
-	public static final String INDEX_LOCATION = "data/nlh_index";
+	public static final String INDEX_LOCATION = "./data/nlh_index";
+	
+	public void generateByArray() throws FileNotFoundException, IOException, ParseException{
+		String path = "./data/cases";
+		File file = null;
+		File folder = new File(path);
+		File[] listOfFiles = folder.listFiles();
+		ArrayList<String> terms = new ArrayList<String>();
+		
+		for(int i = 0; i < listOfFiles.length; i++){
+			if(listOfFiles[i].isFile()){
+				file = listOfFiles[i];
+			}
+			try{
+				terms = CaseParser.parseFileArray(file);
+			}catch(FileNotFoundException e){
+				System.out.println("Error: " + e.getMessage());
+			}
+			catch(IOException e){
+				System.out.println("Error: " + e.getMessage());
+			}
+			System.out.println("Case file #" + (i+1));
+			System.out.println("---------------");
+			for(int k = 0; k < terms.size(); k++){
+				System.out.println("Sentence #" + (k+1));
+				searchWithArray(terms.get(k));
+			}
+		}
+	}
 	
 	public void generate(){
 		
@@ -69,6 +99,7 @@ public class TableGenerator {
 			}
 		}
 	}
+	
 	@SuppressWarnings("deprecation")
 	public static void search(String input) throws ParseException, IOException{
         String query = input;
@@ -88,6 +119,28 @@ public class TableGenerator {
             int docId = hits[i].doc;
             org.apache.lucene.document.Document d = searcher.doc(docId);
             System.out.println((i + 1) + ". " + d.get("Disease") + " - " + d.get("Desc"));
+        }
+	}
+	
+	@SuppressWarnings("deprecation")
+	public static void searchWithArray(String input) throws ParseException, IOException{
+        String query = input;
+        StandardAnalyzer analyzer = new StandardAnalyzer(Version.LUCENE_41);
+        Query q = new QueryParser(Version.LUCENE_41, "Desc", analyzer).parse(query);
+        Directory index = new NIOFSDirectory(new File(INDEX_LOCATION));
+        int hitsPerPage = 3;
+        IndexReader reader = IndexReader.open(index);
+        IndexSearcher searcher = new IndexSearcher(reader);
+        TopScoreDocCollector collector = TopScoreDocCollector.create(hitsPerPage, true);
+        searcher.search(q, collector);
+        ScoreDoc[] hits = collector.topDocs().scoreDocs;
+       
+        //System.out.println("Found " + hits.length + " hits.");
+       
+        for(int i=0;i<hits.length;++i) {
+            int docId = hits[i].doc;
+            org.apache.lucene.document.Document d = searcher.doc(docId);
+            System.out.println((i + 1) + ". " + d.get("Disease"));
         }
 	}
 
